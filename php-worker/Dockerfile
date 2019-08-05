@@ -80,6 +80,9 @@ RUN if [ $INSTALL_PHALCON = true ]; then \
     && rm -rf /tmp/cphalcon* \
 ;fi
 
+ENV http_proxy ${HTTP_PROXY}
+ENV https_proxy ${HTTP_PROXY}
+
 #
 #--------------------------------------------------------------------------
 # Optional Supervisord Configuration
