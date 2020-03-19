@@ -41,11 +41,17 @@ RUN set -xe; \
       # base image (https://github.com/Laradock/php-fpm).
       #
       # next lines are here becase there is no auto build on dockerhub see https://github.com/laradock/laradock/pull/1903#issuecomment-463142846
-      libzip-dev zip unzip && \
+      libzip-dev zip unzip libwebp-dev libjpeg-dev libfreetype6-dev libpng-dev && \
       docker-php-ext-configure zip --with-libzip && \
       # Install the zip extension
       docker-php-ext-install zip && \
       php -m | grep -q 'zip'
+
+RUN docker-php-ext-configure gd \
+    --with-jpeg-dir=/usr/lib \
+    --with-webp-dir=/usr/lib \
+    --with-freetype-dir=/usr/include/freetype2 && \
+    docker-php-ext-install gd
 
 #
 #--------------------------------------------------------------------------

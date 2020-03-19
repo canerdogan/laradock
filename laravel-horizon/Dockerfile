@@ -97,6 +97,10 @@ RUN if [ ${INSTALL_MEMCACHED} = true ]; then \
 RUN rm /var/cache/apk/* \
   && mkdir -p /var/www
 
+#HTTP Proxy
+ENV http_proxy ${HTTP_PROXY}
+ENV https_proxy ${HTTP_PROXY}
+
 #
 #--------------------------------------------------------------------------
 # Optional Supervisord Configuration
