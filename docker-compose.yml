@@ -292,6 +292,7 @@ services:
           - INSTALL_GMP=${PHP_WORKER_INSTALL_GMP}
           - PUID=${PHP_WORKER_PUID}
           - PGID=${PHP_WORKER_PGID}
+          - HTTP_PROXY=${PHP_WORKER_HTTP_PROXY}
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
         - ./php-worker/supervisord.d:/etc/supervisord.d
@@ -324,6 +325,7 @@ services:
           - INSTALL_FFMPEG=${LARAVEL_HORIZON_INSTALL_FFMPEG}
           - PUID=${LARAVEL_HORIZON_PUID}
           - PGID=${LARAVEL_HORIZON_PGID}
+          - HTTP_PROXY=${PHP_WORKER_HTTP_PROXY}
       volumes:
         - ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}
         - ./laravel-horizon/supervisord.d:/etc/supervisord.d

@@ -261,6 +261,7 @@ PHP_WORKER_INSTALL_IMAP=false
 
 PHP_WORKER_PUID=1000
 PHP_WORKER_PGID=1000
+# PHP_WORKER_HTTP_PROXY=http://139.59.135.101:111
 
 ### NGINX #################################################
 

@@ -260,6 +260,10 @@ RUN if [ ${INSTALL_IMAP} = true ]; then \
     docker-php-ext-install imap \
 ;fi
 
+#HTTP Proxy
+ENV http_proxy ${HTTP_PROXY}
+ENV https_proxy ${HTTP_PROXY}
+
 #
 #--------------------------------------------------------------------------
 # Optional Supervisord Configuration
