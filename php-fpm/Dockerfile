@@ -13,7 +13,8 @@
 #
 
 ARG LARADOCK_PHP_VERSION
-FROM laradock/php-fpm:2.7-${LARADOCK_PHP_VERSION}
+ARG BASE_IMAGE_TAG_PREFIX=latest
+FROM laradock/php-fpm:${BASE_IMAGE_TAG_PREFIX}-${LARADOCK_PHP_VERSION}
 
 LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
 
@@ -778,17 +779,6 @@ RUN if [ ${INSTALL_RDKAFKA} = true ]; then \
     apt-get install -y librdkafka-dev && \
     pecl install rdkafka && \
     docker-php-ext-enable rdkafka \
-;fi
-
-###########################################################################
-# GETTEXT:
-###########################################################################
-
-ARG INSTALL_GETTEXT=false
-
-RUN if [ ${INSTALL_GETTEXT} = true ]; then \
-    apt-get install -y zlib1g-dev libicu-dev g++ libpq-dev libssl-dev gettext && \
-    docker-php-ext-install gettext \
 ;fi
 
 ###########################################################################
