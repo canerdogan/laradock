@@ -917,6 +917,18 @@ RUN if [ ${INSTALL_XMLRPC} = true ]; then \
 ;fi
 
 ###########################################################################
+# PHP GRPC EXTENSION
+###########################################################################
+
+ARG INSTALL_PHPGRPC=false
+
+RUN if [ ${INSTALL_PHPGRPC} = true ]; then \
+    printf "\n" | pecl install -o -f grpc \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable grpc \
+;fi
+
+###########################################################################
 # Check PHP version:
 ###########################################################################
 
