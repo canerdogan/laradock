@@ -50,7 +50,7 @@ RUN set -xe; \
       # base image (https://github.com/Laradock/php-fpm).
       #
       # next lines are here becase there is no auto build on dockerhub see https://github.com/laradock/laradock/pull/1903#issuecomment-463142846
-      libzip-dev zip unzip libwebp-dev libjpeg-dev libfreetype6-dev libpng-dev && \
+      libzip-dev zip unzip && \
       if [ ${LARADOCK_PHP_VERSION} = "7.3" ] || [ ${LARADOCK_PHP_VERSION} = "7.4" ]; then \
         docker-php-ext-configure zip; \
       else \
@@ -59,12 +59,6 @@ RUN set -xe; \
       # Install the zip extension
       docker-php-ext-install zip && \
       php -m | grep -q 'zip'
-
-RUN docker-php-ext-configure gd \
-    --with-jpeg-dir=/usr/lib \
-    --with-webp-dir=/usr/lib \
-    --with-freetype-dir=/usr/include/freetype2 && \
-    docker-php-ext-install gd
 
 #
 #--------------------------------------------------------------------------
@@ -789,6 +783,17 @@ RUN if [ ${INSTALL_RDKAFKA} = true ]; then \
 ;fi
 
 ###########################################################################
+# GETTEXT:
+###########################################################################
+
+ARG INSTALL_GETTEXT=false
+
+RUN if [ ${INSTALL_GETTEXT} = true ]; then \
+    apt-get install -y zlib1g-dev libicu-dev g++ libpq-dev libssl-dev gettext && \
+    docker-php-ext-install gettext \
+;fi
+
+###########################################################################
 # Install additional locales:
 ###########################################################################
 
@@ -851,6 +856,30 @@ ARG INSTALL_FFMPEG=false
 RUN if [ ${INSTALL_FFMPEG} = true ]; then \
     apt-get -y install ffmpeg \
 ;fi
+
+###########################################################################
+# BBC Audio Waveform Image Generator:
+###########################################################################
+
+USER root
+
+ARG INSTALL_AUDIOWAVEFORM=false
+
+RUN if [ ${INSTALL_AUDIOWAVEFORM} = true ]; then \
+   apt-get -y install git wget make cmake gcc g++ libmad0-dev libid3tag0-dev libsndfile1-dev libgd-dev libboost-filesystem-dev libboost-program-options-dev libboost-regex-dev \
+   && git clone https://github.com/bbc/audiowaveform.git \
+   && cd audiowaveform \
+   && wget https://github.com/google/googletest/archive/release-1.10.0.tar.gz \
+   && tar xzf release-1.10.0.tar.gz \
+   && ln -s googletest-release-1.10.0/googletest googletest \
+   && ln -s googletest-release-1.10.0/googlemock googlemock \
+   && mkdir build \
+   && cd build \
+   && cmake .. \
+   && make \
+   && make install \
+;fi
+
 
 #####################################
 # wkhtmltopdf:
@@ -917,15 +946,15 @@ RUN if [ ${INSTALL_XMLRPC} = true ]; then \
 ;fi
 
 ###########################################################################
-# PHP GRPC EXTENSION
+# Downgrade Openssl:
 ###########################################################################
 
-ARG INSTALL_PHPGRPC=false
+ARG DOWNGRADE_OPENSSL_TLS_AND_SECLEVEL=false
 
-RUN if [ ${INSTALL_PHPGRPC} = true ]; then \
-    printf "\n" | pecl install -o -f grpc \
-    && rm -rf /tmp/pear \
-    && docker-php-ext-enable grpc \
+RUN if [ ${DOWNGRADE_OPENSSL_TLS_AND_SECLEVEL} = true ]; then \
+    sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.2',g' /etc/ssl/openssl.cnf \
+    && \
+    sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf\
 ;fi
 
 ###########################################################################
